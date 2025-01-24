@@ -10,7 +10,7 @@ pipeline {
             steps {
                 sh 'python3 -m venv /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/'
                 sh '/bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/python'
-                sh 'source retail_pipeline_venv/bin/activate'
+                sh '/bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/activate'
                 sh 'pip install --upgrade pip'
                 sh 'pip install pipenv'
                 sh 'pipenv install'
