@@ -36,6 +36,12 @@ pipeline {
         stage('Package') {
             steps {
                 echo "Packaging the project..."
+                echo "Installing zip utility..."
+                sh 'sudo apt-get update && sudo apt-get install -y zip'
+                echo "Packaging the project..."
+                sh '''
+                    zip -r retailanalysis.zip . -x "retail_pipeline_venv/*"
+                    '''
                 sh '''
                     zip -r retailanalysis.zip . -x "retail_pipeline_venv/*"
                 '''
