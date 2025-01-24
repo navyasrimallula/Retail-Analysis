@@ -8,7 +8,8 @@ pipeline {
     {
         stage('Build') {
             steps {
-                sh 'pip install --user pipenv'
+                sh 'python3 -m venv /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/'
+                sh '/bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/python'
                 sh '/bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/pipenv --rm || exit 0'
                 sh '/bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/pipenv install'
                 script {
