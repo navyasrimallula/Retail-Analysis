@@ -5,10 +5,18 @@ pipeline {
     }
     stages 
     {
-       
+       stage('Setup') {
+            steps {
+                sh '''
+                    sudo apt update
+                    sudo apt install -y python3-venv
+                    python3 -m venv retail_pipeline_venv
+                '''
+            }
+        }
         stage('Build') {
             steps {
-                sh 'python3 -m venv retail_pipeline_venv'
+                
                 sh './retail_pipeline_venv/bin/pip install --upgrade pip'
                 sh './retail_pipeline_venv/bin/pip install pipenv'
                 sh './retail_pipeline_venv/bin/pipenv install'
