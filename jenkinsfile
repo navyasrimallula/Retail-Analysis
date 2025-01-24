@@ -4,42 +4,58 @@ pipeline {
     environment {
         LABS = credentials("LabCreds")
     }
-    stages 
-    {
+
+    stages {
         stage('Build') {
             steps {
-                sh 'python3 -m venv /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/'
-                sh '/bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/'
-                sh '/bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/activate'
-                sh 'pip install --upgrade pip'
-                sh 'pip install pipenv'
-                sh 'pipenv install'
+                script {
+                    echo "Setting up the Python virtual environment..."
+                    sh '''
+                        python3 -m venv /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv
+                        source /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/activate
+                        pip install --upgrade pip
+                        pip install pipenv
+                        pipenv install
+                    '''
+                }
                 script {
                     echo "Build completed successfully"
                 }
             }
         }
+
         stage('Test') {
             steps {
-                sh '/bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/pipenv run pytest'
-                echo "Test completed successfully"
+                script {
+                    echo "Running tests with pipenv..."
+                    sh '''
+                        source /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/activate
+                        pipenv run pytest
+                    '''
+                    echo "Test completed successfully"
                 }
             }
-                    stage('Package') {
+        }
+
+        stage('Package') {
             steps {
-                sh 'zip -r retailanalysis.zip . -x "retail_pipeline_venv/*"'
+                echo "Packaging the project..."
+                sh '''
+                    zip -r retailanalysis.zip . -x "retail_pipeline_venv/*"
+                '''
                 echo "Package completed successfully"
             }
         }
+
         stage('Deploy') {
             steps {
-                sh '''sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r . 
-                $LABS_USR@g01.itversity.com:/home/itv014211/retailAnalysis'''
+                echo "Deploying the project..."
+                sh '''
+                    sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r . \
+                    $LABS_USR@g01.itversity.com:/home/itv014211/retailAnalysis
+                '''
                 echo "Deploy completed successfully"
             }
         }
-        }
     }
-
-
-
+}
