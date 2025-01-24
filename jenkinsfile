@@ -8,9 +8,10 @@ pipeline {
        
         stage('Build') {
             steps {
-                sh 'pip3 install --user pipenv'
-                sh '/bitnami/jenkins/home/.local/bin/pipenv -rm || exit 0'
-                sh '/bitnami/jenkins/home/.local/bin/pipenv install'
+                sh 'python3 -m venv retail_pipeline_venv'
+                sh './retail_pipeline_venv/bin/pip install --upgrade pip'
+                sh './retail_pipeline_venv/bin/pip install pipenv'
+                sh './retail_pipeline_venv/bin/pipenv install'
                 script {
                     echo "Build completed successfully"
                 }
@@ -18,19 +19,20 @@ pipeline {
         }
         stage('Test') {
             steps {
-                sh '/bitnami/jenkins/home/.local/bin/pipenv run pytest'
+                sh './retail_pipeline_venv/bin/pipenv run pytest'
                 echo "Test completed successfully"
                 }
             }
                     stage('Package') {
             steps {
-                sh 'zip -r retailanalysis.zip .'
+                sh 'zip -r retailanalysis.zip . -x "retail_pipeline_venv/*"'
                 echo "Package completed successfully"
             }
         }
         stage('Deploy') {
             steps {
-                sh 'sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r . $LABS_USR@g01.itversity.com:/home/itv014211/retailAnalysis'
+                sh '''sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r . 
+                $LABS_USR@g01.itversity.com:/home/itv014211/retailAnalysis'''
                 echo "Deploy completed successfully"
             }
         }
