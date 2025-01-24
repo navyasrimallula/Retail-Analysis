@@ -35,15 +35,19 @@ pipeline {
 
         stage('Package') {
             steps {
-                echo "Packaging the project..."
-                echo "Installing zip utility..."
-                sh 'sudo apt-get update && sudo apt-get install -y zip'
-                echo "Packaging the project..."
+                echo "Packaging the project with Python..."
                 sh '''
-                    zip -r retailanalysis.zip . -x "retail_pipeline_venv/*"
-                    '''
-                sh '''
-                    zip -r retailanalysis.zip . -x "retail_pipeline_venv/*"
+                    python3 -c "
+import zipfile
+import os
+
+zipf = zipfile.ZipFile('retailanalysis.zip', 'w', zipfile.ZIP_DEFLATED)
+for root, dirs, files in os.walk('.'):
+    for file in files:
+        if 'retail_pipeline_venv' not in root:  # Exclude virtualenv folder
+            zipf.write(os.path.join(root, file), os.path.relpath(os.path.join(root, file), '.'))
+zipf.close()
+"
                 '''
                 echo "Package completed successfully"
             }
