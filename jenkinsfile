@@ -12,10 +12,7 @@ pipeline {
                     echo "Setting up the Python virtual environment..."
                     sh '''
                         python3 -m venv /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv
-                        source /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/activate
-                        pip install --upgrade pip
-                        pip install pipenv
-                        pipenv install
+                        bash -c "source /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/activate && pip install --upgrade pip && pip install pipenv && pipenv install"
                     '''
                 }
                 script {
@@ -29,8 +26,7 @@ pipeline {
                 script {
                     echo "Running tests with pipenv..."
                     sh '''
-                        source /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/activate
-                        pipenv run pytest
+                        bash -c "source /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/activate && pipenv run pytest"
                     '''
                     echo "Test completed successfully"
                 }
