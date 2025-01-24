@@ -30,8 +30,7 @@ pipeline {
         }
         stage('Deploy') {
             steps {
-                sh 'sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r .
-                $LABS_USR@g01.itversity.com:/home/itv014211/retailAnalysis'
+                sh 'sshpass -p $LABS_PSW scp -o StrictHostKeyChecking=no -r . $LABS_USR@g01.itversity.com:/home/itv014211/retailAnalysis'
                 echo "Deploy completed successfully"
             }
         }
