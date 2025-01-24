@@ -10,7 +10,7 @@ pipeline {
             steps {
                 sh 'python3 -m venv /bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/'
                 sh '/bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/python'
-                sh '/bitnami/jenkins/home/workspace/tailAnalysisProjectPipeline_main/retail_pipeline_venv/bin/pipenv install'
+                sh 'pipenv install'
                 script {
                     echo "Build completed successfully"
                 }
